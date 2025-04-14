@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Translator</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Language Translator</h1>
+    <form id="translationForm">
+        <label for="text">Text to Translate:</label><br>
+        <textarea id="text" name="text" rows="4" cols="50"></textarea><br>
+        <label for="source_lang">Source Language:</label>
+        <input type="text" id="source_lang" name="source_lang"><br>
+        <label for="target_lang">Target Language:</label>
+        <input type="text" id="target_lang" name="target_lang"><br>
+        <button type="button" onclick="translateText()">Translate</button>
+    </form>
+    <div id="translatedText"></div>
+
+    <script>
+        function translateText() {
+            var formData = {
+                text: document.getElementById("text").value,
+                source_lang: document.getElementById("source_lang").value,
+                target_lang: document.getElementById("target_lang").value
+            };
+
+            fetch('/translate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("translatedText").innerHTML = "<b>Translated Text:</b> " + data.translated_text;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
